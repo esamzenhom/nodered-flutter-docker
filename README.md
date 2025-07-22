@@ -1,76 +1,70 @@
-🐳 Node-RED + Flutter Docker Image
-A Docker image combining Node-RED and the full Flutter SDK, perfect for prototyping automation systems, dashboards, or UI-backed logic flows with Flutter-powered web or mobile apps.
+# Node-RED + Flutter Web Docker Image
 
-🔧 Features
-✅ Pre-installed Node-RED (via npm)
+This Docker image provides an environment to run [Node-RED](https://nodered.org/) alongside [Flutter](https://flutter.dev/) for building and deploying Flutter Web applications.  
+Optionally, it can include **Google Chrome** for web testing (`flutter run -d chrome` and `flutter test`).
 
-✅ Pre-installed Flutter SDK (with flutter doctor run and dependencies cached)
+---
 
-✅ Volumes for persistent storage of:
+## 📦 Features
 
-Node-RED data
+- Node.js 20 (based on `node:20-bullseye-slim`)
+- Node-RED (installed globally)
+- Flutter SDK (Web support enabled)
+- OpenJDK 17 (for Android builds, optional)
+- Optional Google Chrome (for development & testing)
+- Entrypoint script to manage environment startup
 
-Flutter SDK
+---
 
-Pub package cache
+## 🐳 Usage
 
-Flutter build outputs
+### Build the Docker image
 
-✅ Optimized for development and CI workflows
+```bash
+docker build -t nodered-flutter .
+To enable Chrome support, make sure the Dockerfile includes the relevant Chrome installation block.
 
-✅ Optionally supports Flutter Web out-of-the-box
-
-📁 Project Structure
+Run the container
 bash
+Copy
+Edit
+docker run -p 1880:1880 -v $(pwd)/data:/data nodered-flutter
+Node-RED will be available at: http://localhost:1880
+
+Flutter can be used from within the container for flutter build web
+
+🚀 Flutter Commands
+Inside the container:
+
+bash
+Copy
+Edit
+# Check flutter setup
+flutter doctor
+
+# Build web output
+flutter build web
+
+# (Optional) Run on Chrome (only if Chrome is installed)
+flutter run -d chrome
+🔍 Healthcheck
+The image includes a HEALTHCHECK to verify that Flutter is installed and working:
+
+dockerfile
+Copy
+Edit
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+  CMD [ -x /opt/flutter/bin/flutter ] && /opt/flutter/bin/flutter --version || exit 1
+📁 Project Structure
+graphql
 Copy
 Edit
 .
-├── Dockerfile             # Builds Node-RED + Flutter environment
-├── docker-compose.yml     # Runs container with persistent volumes
-└── README.md              # You are here
-🚀 Getting Started
-1. Clone the Repo
-bash
-Copy
-Edit
-git clone https://github.com/<your-username>/nodered-flutter-dev-env.git
-cd nodered-flutter-dev-env
-2. Build & Run with Docker Compose
-bash
-Copy
-Edit
-docker compose up --build -d
-3. Access Node-RED
-Open your browser:
+├── Dockerfile
+├── entrypoint.sh
+├── README.md
+└── data/              # Your persistent Node-RED data
+🛠 Requirements
+Docker
 
-arduino
-Copy
-Edit
-http://localhost:1880
-4. Use Flutter
-To access the container and run Flutter commands:
-
-bash
-Copy
-Edit
-docker exec -it nodered_flutter bash
-flutter doctor
-flutter create myapp
-cd myapp
-flutter run -d web-server --web-port 8080
-Then visit: http://localhost:8080
-
-🔄 Volumes
-Volume Name	Path in Container	Purpose
-nodered_data	/data	Node-RED project and flows
-flutter_sdk	/opt/flutter	Flutter SDK source
-flutter_cache	/root/.pub-cache	Dart package cache
-flutter_build	/root/build	Flutter build artifacts
-android_home	/root/Android (optional)	Placeholder for Android SDK
-
-📦 Publishing to GitHub Container Registry (Optional)
-bash
-Copy
-Edit
-docker tag nodered-flutter ghcr.io/<your-username>/nodered-flutter:latest
-docker push ghcr.io/<your-username>/nodered-flutter:latest
+(Optional) Volume mount for /data if you want persistence
