@@ -1,15 +1,15 @@
+version: "3.8"
 
 services:
   nodered_flutter:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        FLUTTER_VERSION: ${FLUTTER_VERSION}
     container_name: nodered_flutter
     ports:
-      - "${NODERED_PORT}:1880"
-      - "${FLUTTER_WEB_PORT}:8080"
+      - "${NODERED_PORT:-1880}:1880"
+    environment:
+      - FLUTTER_VERSION=${FLUTTER_VERSION:-stable}
     volumes:
       - nodered_data:/data
       - flutter_sdk:/opt/flutter
