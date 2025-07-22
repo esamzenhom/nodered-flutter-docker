@@ -1,0 +1,26 @@
+
+services:
+  nodered_flutter:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        FLUTTER_VERSION: ${FLUTTER_VERSION}
+    container_name: nodered_flutter
+    ports:
+      - "${NODERED_PORT}:1880"
+      - "${FLUTTER_WEB_PORT}:8080"
+    volumes:
+      - nodered_data:/data
+      - flutter_sdk:/opt/flutter
+      - flutter_cache:/root/.pub-cache
+      - flutter_build:/root/build
+      - android_home:/root/Android
+    restart: unless-stopped
+
+volumes:
+  nodered_data:
+  flutter_sdk:
+  flutter_cache:
+  flutter_build:
+  android_home:
