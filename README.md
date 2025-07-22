@@ -18,7 +18,7 @@ Optionally, it can include **Google Chrome** for web testing (`flutter run -d ch
 
 ## 🐳 Usage
 
-### Build the Docker image
+## Build the Docker image
 
 ```bash
 docker build -t nodered-flutter .
